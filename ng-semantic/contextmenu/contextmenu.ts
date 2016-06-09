@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, HostListener, Renderer } from "@angular/core";
+import { Component, Input, EventEmitter, Output, HostListener, Renderer } from "@angular/core";
 
 /**
  * Implementation of Dropdown module on right click
@@ -26,9 +26,12 @@ export class SemanticContextMenuComponent {
     show: boolean = false;
 
     @Input() items: Array<{}>;
+    @Output() reducer = new EventEmitter();
 
     @HostListener("document:click")
     public clickedOutside(): void {
+
+        this.reducer.emit(this.items.filter((item: { method: number }) => item.method === 0));
         this.show = false;
     }
 

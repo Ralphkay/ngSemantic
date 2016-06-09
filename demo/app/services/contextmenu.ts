@@ -3,6 +3,7 @@ import { Subject } from "rxjs/Rx";
 
 export interface IContextMenu {
     action: Function;
+    id: string;
     title: string;
     method: number;
     icon: string;

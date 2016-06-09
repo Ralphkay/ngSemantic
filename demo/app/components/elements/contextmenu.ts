@@ -8,7 +8,7 @@ declare var jQuery: any;
 @Component({
     directives: [SEMANTIC_COMPONENTS, SEMANTIC_DIRECTIVES, <Type>CodeblockComponent, <Type>PrismJsDirective],
     selector: "sm-demo-component",
-    template: `<sm-card (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" class="ui card">
+    template: `<sm-card (mouseenter)="onMouseEnter()" class="ui card">
     <card-title>Hello 1</card-title>
     <card-content>Hello from card</card-content>
 </sm-card>`
@@ -21,15 +21,7 @@ class DemoInnerComponent {
         this.contextmenu.menu.next({
             action: (): void => { location.assign("/#/elements/accordion"); },
             icon: "add",
-            method: 1,
-            title: "Add new Card",
-        });
-    }
-
-    onMouseLeave() {
-        this.contextmenu.menu.next({
-            action: (): void => { location.assign("/#/elements/accordion"); },
-            icon: "add",
+            id: "add",
             method: 0,
             title: "Add new Card",
         });
@@ -59,7 +51,7 @@ class DemoInnerComponent {
         <h4 class="header">Demo ( hover on inner components )</h4>
         <sm-demo-component></sm-demo-component>
         
-        <sm-contextmenu [items]="menuItems"></sm-contextmenu>
+        <sm-contextmenu [items]="menuItems" (reducer)="removeItems($event)"></sm-contextmenu>
     </div>
     `
 })
@@ -71,17 +63,17 @@ export class ContextmenuComponent {
     constructor(contextmenu: ContextMenuService) {
 
         contextmenu.menu.subscribe((item: IContextMenu) => {
-            if (item.method) {
+            const position = this.menuItems.map(function(e: IContextMenu) { return e.id; }).indexOf(item.id);
+
+            if (position < 0) {
                 this.menuItems = [...this.menuItems, item];
-            } else {
-                item.method = 1;
-                this.menuItems.splice(this.menuItems.indexOf(item), 1);
             }
         });
 
         contextmenu.menu.next({
             action: (): void => { location.assign("/#/elements/accordion"); },
             icon: "home",
+            id: "home",
             method: 1,
             title: "Go to Accordion Page",
         });
@@ -89,6 +81,7 @@ export class ContextmenuComponent {
         contextmenu.menu.next({
             action: (): void => { location.reload(); },
             icon: "refresh",
+            id: "refresh",
             method: 1,
             title: "Refresh window"
         });
@@ -97,8 +90,17 @@ export class ContextmenuComponent {
             action: (): void => { jQuery(".ui.modal.modal")
                 .modal("toggle"); },
             icon: "browser",
+            id: "browser",
             method: 1,
             title: "Open modal Window"
         });
+    }
+
+    removeItems(data: Array<{}>) {
+        if (data) {
+            data.map((item: IContextMenu) => {
+                this.menuItems.splice(this.menuItems.indexOf(item), 1);
+            });
+        }
     }
 }

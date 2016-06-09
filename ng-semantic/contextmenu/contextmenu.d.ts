@@ -1,4 +1,4 @@
-import { Renderer } from "@angular/core";
+import { EventEmitter, Renderer } from "@angular/core";
 export declare class SemanticContextMenuComponent {
     _position: {
         x: number;
@@ -6,6 +6,7 @@ export declare class SemanticContextMenuComponent {
     };
     show: boolean;
     items: Array<{}>;
+    reducer: EventEmitter<{}>;
     clickedOutside(): void;
     constructor(renderer: Renderer);
 }
